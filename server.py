@@ -7,7 +7,7 @@ from binascii import b2a_hex, a2b_hex
 mode = AES.MODE_CBC
 
 HOST = '127.0.0.1'
-PORT = 8001
+PORT = 8005
  # AF_INET: local 
  # SOCK_STREAM: TCP based
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -37,9 +37,10 @@ print "alice wealth = ",alice_wealth
 i = 0
 result = 1
 while True:
-
+    print '#############################'
     print "##### %d-th comparision #####" % (i+1)
-    conn.send(str(i))
+    print '#############################'
+    #conn.send(str(i))
     # generate 6 random numbers
     k = []
     chars = [str(j) for j in range(0,10)]
@@ -95,9 +96,12 @@ while True:
         print ":  1"
     # send k[2] or k[3]
     print "Run OT to sent next key"
-
+    
+    length_key = int(conn.recv(10))
+    print "the received length is",length_key
     print "Receiving public key 1"
-    n1 = int(conn.recv(1024))
+    #length1 = int(conn.recv(1024))
+    n1 = int(conn.recv(length_key))
     print "n1 = ",n1
     #e1 = int(conn.recv(5))
     #print "e1 = ",e1
@@ -105,7 +109,7 @@ while True:
     
     
     print "Receiving public key 2"
-    n2 = int(conn.recv(1024))
+    n2 = int(conn.recv(length_key))
     print "n2 = ",n2
     #e2 = int(conn.recv(5))
     #print "e2 = ",e2
@@ -119,11 +123,19 @@ while True:
     cipher1 = rsa.encrypt(k[2],public_key1)
     cipher2 = rsa.encrypt(k[3],public_key2)
     print "sending encrypted keys..."
-    print "cipher1 = ",cipher1
     
+    l1 = len(cipher1)
+    # send length firstly
+    # conn.send(str(l1))
+    print "l1 = ",l1
     conn.send(cipher1)
-    print "cipher2 = ",cipher2
+    print "cipher1 = ",b2a_hex(cipher1)
+    l2 = len(cipher2)
+    print "l2 = ",l2
+    #conn.send(str(l2))
     conn.send(cipher2)
+    print "cipher2 = ",b2a_hex(cipher2)
+    
     print "Receiving Bob's decrypted keys"
     p1 = conn.recv(16)
     p2 = conn.recv(16)
@@ -135,7 +147,6 @@ while True:
     # and we should stop now 
     for pi in p:
         if pi in k and pi == k[4]:
-
             result = 0
     # send result to Bob
     conn.send(str(result))
