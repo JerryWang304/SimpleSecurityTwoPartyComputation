@@ -7,7 +7,7 @@ from binascii import b2a_hex, a2b_hex
 mode = AES.MODE_CBC
 
 HOST = '127.0.0.1'
-PORT = 8005
+PORT = 8007
  # AF_INET: local 
  # SOCK_STREAM: TCP based
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -126,13 +126,13 @@ while True:
     
     l1 = len(cipher1)
     # send length firstly
-    # conn.send(str(l1))
+    conn.send(str(l1))
     print "l1 = ",l1
     conn.send(cipher1)
     print "cipher1 = ",b2a_hex(cipher1)
     l2 = len(cipher2)
     print "l2 = ",l2
-    #conn.send(str(l2))
+    conn.send(str(l2))
     conn.send(cipher2)
     print "cipher2 = ",b2a_hex(cipher2)
     

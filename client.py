@@ -6,7 +6,7 @@ from numpy.random import permutation
 from binascii import b2a_hex, a2b_hex
 mode = AES.MODE_CBC
 HOST = '127.0.0.1'
-PORT = 8005
+PORT = 8007
 
  
 def double_decode(k1,k2,ciphertext):
@@ -87,7 +87,7 @@ while True:
         s.send(str(public_key['n']))
         #s.send(str(public_key1['e']))
         print "\n"                
-    print "Receiving two encryped keys..."
+    print "Receiving two encrypted keys..."
     
     # l1 = s.recv(10)
     # print "receiving length of cipher1: ",l1
@@ -100,11 +100,14 @@ while True:
     # l2 = int(l2)
     # x2 = s.recv(l2) 
     # print "x2 = ",b2a_hex(x2)
-
-    x1 = s.recv(128)
+    l1 = s.recv(3)
+    print "l1 received is ",l1
+    x1 = s.recv(int(l1))
     print "x1 = ",b2a_hex(x1)
 
-    x2 = s.recv(128)
+    l2 = s.recv(3)
+    print "l2 received is ",l2
+    x2 = s.recv(int(l2))
     print "x2 = ",b2a_hex(x2)
     # encode to get key representing bob's 0 or 1
     if bob_wealth[i] == '0':
