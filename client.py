@@ -1,6 +1,7 @@
 import socket
 import rsa
 import random
+from decToBin import dec_to_bin
 from Crypto.Cipher import AES
 from numpy.random import permutation
 from binascii import b2a_hex, a2b_hex
@@ -19,9 +20,13 @@ def double_decode(k1,k2,ciphertext):
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 s.connect((HOST, PORT))
 num_bits = int(s.recv(20))
-print "At most %d bits" % num_bits
-bob_wealth = raw_input("Input Bob's wealth: ")
-print "Bob's wealth = ",bob_wealth
+
+
+bob_wealth = input("Please input a number between 0 and %d: " % (2**num_bits-1))
+assert type(bob_wealth) == int and bob_wealth >= 0 and bob_wealth <= (2**num_bits-1)
+bob_wealth = dec_to_bin(bob_wealth,num_bits)
+print "bob wealth = ",bob_wealth
+
 i = 0
 while True:
     # receive i
@@ -140,4 +145,6 @@ while True:
         break
     i = i+1
 s.close()
+print '*'*15
 print "result = ",result
+

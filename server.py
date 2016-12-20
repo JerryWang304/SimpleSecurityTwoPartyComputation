@@ -1,6 +1,7 @@
 import socket
 import random
 import rsa
+from decToBin import dec_to_bin
 from Crypto.Cipher import AES
 from numpy.random import permutation
 from binascii import b2a_hex, a2b_hex
@@ -31,8 +32,9 @@ def double_encode(k1,k2,plaintext):
     ciphertext2 = encryptor.encrypt(ciphertext1)
     return ciphertext2
 
-
-alice_wealth = raw_input("Input Alice's wealth in binary format: ")
+alice_wealth = input("Please input a number between 0 and %d: " % (2**n-1))
+assert type(alice_wealth) == int and alice_wealth >= 0 and alice_wealth <= (2**n-1)
+alice_wealth = dec_to_bin(alice_wealth,n)
 print "alice wealth = ",alice_wealth
 i = 0
 result = 1
@@ -157,4 +159,5 @@ while True:
     i = i+1
 
 conn.close()
-print "result = ",result
+print '*'*15
+print "result = %d" % result
